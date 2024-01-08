@@ -23,7 +23,9 @@ class UsersController < ApplicationController
   end
 
   def correct_user
-    @user = User.find(params[:id])
-    redirect_to current_user unless current_user?(@user)
+    User.transabtion do
+      @user = User.lock.find(params[:id])
+      redirect_to current_user unless current_user?(@user)
+    end
   end
 end
